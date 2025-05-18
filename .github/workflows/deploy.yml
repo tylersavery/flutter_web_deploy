@@ -1,0 +1,50 @@
+name: Build & Deploy Flutter Web
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_BUCKET: flutter.lanesavery.com
+      AWS_REGION: us-west-2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.33.0-1.0.pre.18"
+
+      - name: Parse Version
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
+          echo "release=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build Flutter Web App
+        run: |
+          flutter build web --release --base-href /${{ steps.version.outputs.release }}/
+
+      - name: Move build artifacts
+        run: |
+          mkdir -p build/web_output/${{ steps.version.outputs.release }}
+          mv build/web/* build/web_output/${{ steps.version.outputs.release }}/
+          mv build/web_output/${{ steps.version.outputs.release }}/index.html build/web_output/index.html
+          echo "{\"version\": \"${{ steps.version.outputs.release }}\"}" > build/web_output/version.json
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp build/web_output/${{ steps.version.outputs.release }}/ s3://$AWS_BUCKET/${{ steps.version.outputs.release }}/ \
+          --recursive \
+          --cache-control "public, max-age=31536000, immutable"
+
+          aws s3 cp build/web_output/index.html s3://$AWS_BUCKET/index.html \
+            --cache-control "no-store, no-cache, must-revalidate"
+
+          aws s3 cp build/web_output/version.json s3://$AWS_BUCKET/version.json \
+            --cache-control "no-store, no-cache, must-revalidate"
