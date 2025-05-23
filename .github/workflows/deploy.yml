@@ -48,10 +48,3 @@ jobs:
 
           aws s3 cp build/web_output/version.json s3://$AWS_BUCKET/version.json \
             --cache-control "no-store, no-cache, must-revalidate"
-
-      - name: Purge Cloudflare Cache
-        run: |
-          curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            --data '{"files":["https://flutter.lanesavery.com/index.html","https://flutter.lanesavery.com/version.json"]}'
