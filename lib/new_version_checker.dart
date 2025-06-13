@@ -5,7 +5,7 @@ import 'dart:html' as html;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-const currentVersion = "0.0.12";
+const currentVersion = "0.0.13";
 
 class NewVersionChecker extends StatefulWidget {
   const NewVersionChecker({super.key});
