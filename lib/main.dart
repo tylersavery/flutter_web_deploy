@@ -40,9 +40,9 @@ class MyApp extends StatelessWidget {
         '/': (context) => MyHomePage(),
         '/deep': (context) => MyDeepPage(),
       },
-      builder: (context, child) {
-        return Column(children: [NewVersionChecker(), Expanded(child: child!)]);
-      },
+      // builder: (context, child) {
+      //   return Column(children: [NewVersionChecker(), Expanded(child: child!)]);
+      // },
     );
   }
 }
@@ -55,11 +55,17 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Home!!")),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed('/deep');
-          },
-          child: Text("Visit Deep Page"),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NewVersionChecker(),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/deep');
+              },
+              child: Text("Visit Deep Page"),
+            ),
+          ],
         ),
       ),
     );

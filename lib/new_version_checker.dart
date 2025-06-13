@@ -91,7 +91,6 @@ class _NewVersionCheckerState extends State<NewVersionChecker> {
         },
       ),
     ).get("/version.json?t=${DateTime.now().millisecondsSinceEpoch}");
-
     return response.data?['version'];
   }
 
