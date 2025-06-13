@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_deploy/custom_path_strategy.dart';
+import 'package:flutter_web_deploy/new_version_checker.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 void main() {
@@ -38,6 +39,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MyHomePage(),
         '/deep': (context) => MyDeepPage(),
+      },
+      builder: (context, child) {
+        return Column(children: [NewVersionChecker(), Expanded(child: child!)]);
       },
     );
   }
