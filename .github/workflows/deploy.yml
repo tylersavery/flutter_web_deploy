@@ -29,6 +29,7 @@ jobs:
       - name: Build Flutter Web App
         run: |
           flutter build web --release --base-href /${{ steps.version.outputs.release }}/
+          --dart-define=APP_VERSION=${{ steps.version.outputs.release }}/
 
       - name: Move build artifacts
         run: |

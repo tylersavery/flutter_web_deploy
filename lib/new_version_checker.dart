@@ -5,8 +5,6 @@ import 'dart:html' as html;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-const currentVersion = "0.0.15";
-
 class NewVersionChecker extends StatefulWidget {
   const NewVersionChecker({super.key});
 
@@ -74,7 +72,11 @@ class _NewVersionCheckerState extends State<NewVersionChecker> {
 
   Future<bool> checkIfNewVersionIsAvailable() async {
     final remote = await fetchRemoteVersion();
-    if (remote != null && remote != currentVersion) {
+    const currentVersion = const String.fromEnvironment("APP_VERSION");
+    print("currentVersion: $currentVersion");
+    if (currentVersion.isNotEmpty &&
+        remote != null &&
+        remote != currentVersion) {
       return true;
     }
     return false;
